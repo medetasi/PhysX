@@ -363,6 +363,22 @@ void cleanupPhysics(bool /*interactive*/)
 	printf("SnippetHelloWorld done.\n");
 }
 
+void raycast(const PxVec3& origin, const PxVec3& dest)
+{
+	auto dir = dest - origin;
+	auto distance = dir.magnitude();
+	auto hitCall = PxRaycastBuffer{};
+	gScene->raycast(origin, dir.getNormalized(), distance, hitCall);
+	if (hitCall.hasBlock)
+	{
+		std::cout << "hit block" << std::endl;
+		std::cout << "hit position: " << hitCall.block.position.x << " " << hitCall.block.position.y << " " << hitCall.block.position.z << std::endl;
+	} else
+	{
+		std::cout << "no hit" << std::endl;
+	}
+}
+
 void keyPress(unsigned char key, const PxTransform& camera)
 {
 	switch (toupper(key))
@@ -384,6 +400,8 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case 'X': moveBoxForce2();
 		break;
 	case 'K': reconnectPvd();
+		break;
+	case 'Y': raycast({0, 0, 0}, {-15, 1, 1});
 		break;
 	}
 }
